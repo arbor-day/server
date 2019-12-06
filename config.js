@@ -3,5 +3,6 @@ module.exports = {
     PORT: process.env.PORT || 3030,
     USERNAME: process.env.USERNAME,
     PASSWORD:process.env.PASSWORD,
+    JWT_KEY: process.env.JWT_KEY,
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/tree-db'
 }

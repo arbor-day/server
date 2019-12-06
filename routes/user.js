@@ -28,6 +28,7 @@ api.post('/', async (req, res)=>{
 api.post('/login', async (req, res) => {
   try{
     const {email, password} = req.body;
+
     const user = await User.findByCredentials(email, password);
 
     if(!user){
@@ -35,7 +36,8 @@ api.post('/login', async (req, res) => {
     }
 
     const token = await user.generateAuthToken();
-    res.send({user, token});
+
+    res.send({user:user, token});
   }catch(err){
     res.status(400).send(err);
   }
@@ -77,6 +79,10 @@ api.post('/me/logoutall', auth, async (req, res) => {
  */
 api.get('/me', auth, async (req, res) => {
   res.send(req.user);
+})
+
+api.get('/',   async (req, res) => {
+  res.json({message:'working'});
 })
 
 module.exports = api;

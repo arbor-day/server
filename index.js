@@ -43,8 +43,9 @@ app.get("/", (req, res) => {
 
 const userRoutes = require('./routes/user');
 const locationRoutes = require('./routes/location')
+
 // user routes
-app.use('api/v1/users', userRoutes);
+app.use('/api/v1/users', userRoutes);
 // the locations routes
 app.use('/api/v1/locations', locationRoutes);
 

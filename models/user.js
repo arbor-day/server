@@ -13,33 +13,36 @@ const Schema = mongoose.Schema;
  * password
  * jwt tokens
  */
-
 const userSchema = new Schema({
-  name:{
-    type:String,
+  username: {
+    type: String,
     required: true,
     trim: true
   },
-  email:{
+  email: {
     type: String,
     required: true,
-    unique:true,
-    lowercase:true,
+    unique: true,
+    lowercase: true,
     validate: value => {
-      if(!validator.isEmail(value)){
-        throw new Error({error: 'invalid email address'})
+      if (!validator.isEmail(value)) {
+        throw new Error({
+          error: 'invalid email address'
+        })
       }
     }
   },
-  password:{
-    type:String,
+  password: {
+    type: String,
     required: true,
-    minLength:7
+    minLength: 7
   },
-  tokens:{
-    type: [String],
-    required: true
-  }
+  tokens: [{
+    token: {
+      type: String,
+      required: true
+    }
+  }]
 });
 
 /**
@@ -49,12 +52,15 @@ const userSchema = new Schema({
  * then save that user with that new jwt
  * and return it
  */
-userSchema.methods.generateAuthToken = async function(){
+userSchema.methods.generateAuthToken = async function () {
   // generate an auth token for the user
   const user = this;
-
-  const token = jwt.sign({_id:user._id}, config.JWT_KEY)
-  user.tokens = user.tokens.concat({token});
+  const token = jwt.sign({
+    _id: user._id
+  }, config.JWT_KEY)
+  user.tokens = user.tokens.concat({
+    token
+  });
 
   await user.save();
   return token;
@@ -67,10 +73,10 @@ userSchema.methods.generateAuthToken = async function(){
  * is hashed
  * then continue
  */
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   const user = this;
 
-  if(user.isModified('password')){
+  if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
   }
 
@@ -84,20 +90,33 @@ userSchema.pre('save', async function(next) {
  * and then checks to see if email and password
  * are a match
  */
-userSchema.statics.findByCredentials = async(email, password) => {
-  const user = await user.findOne({email});
+userSchema.statics.findByCredentials = async (email, password) => {
+  try {
+    
+    const user = await User.findOne({
+      "email": email
+    });
 
-  if(!user){
-    throw new Error({error: 'invalid login credentials - no email found'})
+    if (!user) {
+      throw new Error({
+        error: 'invalid login credentials - no email found'
+      })
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch) {
+      throw new Error({
+        error: 'invalid login credentials - incorrect password'
+      });
+    }
+
+    return user;
+
+  } catch (err) {
+    throw new Error('error in auth')
   }
 
-  const isPasswordMatch = await bcrypt.compare(password, user.password);
-
-  if(!isPasswordMatch){
-    throw new Error({error: 'invalid login credentials - incorrect password'});
-  }
-
-  return user
 }
 
 const User = mongoose.model('User', userSchema);
