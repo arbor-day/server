@@ -11,7 +11,6 @@ const locationSchema = new Schema({
   "notes": String,
   "latitude": Number,
   "longitude": Number,
-  "state": String,
   "county": String,
   "zip_code": String,
   "country": String,
