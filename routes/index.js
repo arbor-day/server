@@ -4,6 +4,7 @@ const api = express.Router();
 
 const db = require('../models/location.js');
 
+
 /**
  * get
  */
@@ -16,6 +17,7 @@ api.get('/', async (req, res) => {
  * post
  */
 api.post('/', async (req, res) => {
+  console.log(req.body)
   const newData = await db.create(req.body)
   res.json(newData);
 })
