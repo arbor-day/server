@@ -37,6 +37,12 @@ const userSchema = new Schema({
     required: true,
     minLength: 7
   },
+  reset_password_token:{
+    type:String,
+  },
+  reset_password_expires:{
+    type: Date
+  },
   tokens: [{
     token: {
       type: String,
