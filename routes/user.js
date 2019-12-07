@@ -15,8 +15,9 @@ const emailer = require('../helpers/emailer');
  * POST /users
  * create a new user
  */
-api.post('/', async (req, res) => {
+api.post('/register', async (req, res) => {
   try {
+
     const user = new User(req.body)
 
     await user.save();
@@ -26,7 +27,7 @@ api.post('/', async (req, res) => {
     res.cookie('auth_token', token, {
       maxAge: 60 * 60 * 1000, // 1 hour
       httpOnly: false,
-      secure: false, // true,
+      secure: true, // true,
       sameSite: false,
     })
 
