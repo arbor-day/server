@@ -1,7 +1,7 @@
 const express = require('express');
 const api = express.Router();
 const db = require('../models/location.js');
-
+const auth = require('../middleware/auth');
 
 /**
  * get
@@ -14,8 +14,7 @@ api.get('/', async (req, res) => {
 /**
  * post
  */
-api.post('/', async (req, res) => {
-  console.log(req.body)
+api.post('/', auth, async (req, res) => {
   const newData = await db.create(req.body)
   res.json(newData);
 })
@@ -23,7 +22,7 @@ api.post('/', async (req, res) => {
 /**
  * put
  */
-api.put('/:id', async (req, res)=> {
+api.put('/:id', auth, async (req, res)=> {
   const id = typeof req.params.id === String ? req.params.id : null;
   const updateCmd = {$set:req.body};
 
@@ -34,7 +33,7 @@ api.put('/:id', async (req, res)=> {
  * delete
  */
 
-api.delete('/:id', async (req, res) => {
+api.delete('/:id', auth, async (req, res) => {
   const id = typeof req.params.id === String ? req.params.id : null;
   await db.deleteOne(id);
   res.json({message:'successfully deleted feature'});

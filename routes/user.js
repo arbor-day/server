@@ -22,6 +22,14 @@ api.post('/', async (req, res) => {
     await user.save();
     const token = await user.generateAuthToken();
 
+    // Set a cookie
+    res.cookie('auth_token', token, {
+      maxAge: 60 * 60 * 1000, // 1 hour
+      httpOnly: false,
+      secure: false, // true,
+      sameSite: false,
+    })
+
     res.status(201).send({
       user,
       token
@@ -53,10 +61,19 @@ api.post('/login', async (req, res) => {
 
     const token = await user.generateAuthToken();
 
+    // Set a cookie
+    res.cookie('auth_token', token, {
+      maxAge: 60 * 60 * 1000, // 1 hour
+      httpOnly: false,
+      secure: true, // true,
+      sameSite: false,
+    })
+
     res.send({
       user: user,
       token
     });
+
   } catch (err) {
     res.status(400).send(err);
   }

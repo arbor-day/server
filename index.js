@@ -1,9 +1,8 @@
 const express = require('express');
 const http = require('http');
-const fs = require('fs');
 const path = require('path');
-const mongoose = require('mongoose');
-const basicAuth = require('express-basic-auth')
+const cors = require('cors');
+const cookieParser = require('cookie-parser')
 const config = require('./config');
 const PORT = config.PORT;
 
@@ -14,27 +13,36 @@ require('./db/db');
 const app = express();
 const publicPath = path.resolve(__dirname, 'public');
 
+let whitelist;
+if (process.env.NODE_ENV === 'production') {
+    whitelist = [
+      // add urls
+    ]
+} else {
+    whitelist = [
+        'http://localhost:8080',
+        'http://127.0.0.1:8080',
+    ]
+}
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials:true
+}
+
+
 // our middleware
+app.use(cookieParser())
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(express.static(publicPath))
-
-/****************************
- * your authentication 
- ****************************/
-// const challengeAuth = basicAuth({
-//   authorizer: myAuthorizer,
-//   challenge: true,
-//   unauthorizedResponse:getUnauthorizedResponse
-// })
-// //Custom authorizer checking if the username starts with 'A' and the password with 'secret'
-// function myAuthorizer(username, password) {
-//   return username == config.USERNAME && password == config.PASSWORD
-// }
-// function getUnauthorizedResponse(req) {
-//   return 'not authorized'
-// }
-
+app.use(express.static(publicPath));
 
 // the default index
 app.get("/", (req, res) => {
