@@ -165,7 +165,7 @@ api.post('/auth/forgot_password', async (req, res) => {
         <div>
         <h1>Password reset for arbor day</h1>
         <p>
-          url: http://localhost:3000/api/v1/auth/reset_password?token=${token}
+          url: http://localhost:8080/reset_password?token=${token}
           name: ${user.username}
         </p>
         </div>
@@ -174,7 +174,7 @@ api.post('/auth/forgot_password', async (req, res) => {
 
     await emailer.sendMail(emailData);
 
-    return res.json({message:'Kindly check your email for further instructions'})
+    return res.json({status:'success', message:'Kindly check your email for further instructions'})
 
   } catch (err) {
 
@@ -201,7 +201,7 @@ api.post('/auth/reset_password', async (req, res) =>{
     }
 
     if(req.body.newPassword === req.body.verifyPassword){
-      user.password = await bcrypt.hash(req.body.newPassword, 8);
+      user.password = req.body.newPassword
       user.reset_password_token = undefined;
       user.reset_password_token_expires = undefined;
 
@@ -224,7 +224,7 @@ api.post('/auth/reset_password', async (req, res) =>{
 
       await emailer.sendMail(emailData)
 
-      return res.json({message:'password reset successful!'})
+      return res.json({status:'success', message:'password reset successful!'})
     } else {
       throw new Error('passwords do not match')
     }
