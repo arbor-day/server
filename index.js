@@ -17,7 +17,7 @@ let whitelist;
 if (process.env.NODE_ENV === 'production') {
     whitelist = [
       // add urls
-      'https://focused-snyder-f15e2e.netlify.com/'
+      'https://focused-snyder-f15e2e.netlify.com'
     ]
 } else {
     whitelist = [
