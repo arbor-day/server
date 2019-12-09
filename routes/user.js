@@ -26,8 +26,8 @@ api.post('/register', async (req, res) => {
     // Set a cookie
     res.cookie('auth_token', token, {
       maxAge: 60 * 60 * 1000, // 1 hour
-      httpOnly: false,
-      secure: true, // true,
+      httpOnly: true,
+      secure: false, // true,
       sameSite: false,
     })
 
@@ -65,8 +65,8 @@ api.post('/login', async (req, res) => {
     // Set a cookie
     res.cookie('auth_token', token, {
       maxAge: 60 * 60 * 1000, // 1 hour
-      httpOnly: false,
-      secure: true, // true,
+      httpOnly: true,
+      secure: false, // true,
       sameSite: false,
     })
 
@@ -91,7 +91,7 @@ api.post('/me/logout', auth, async (req, res) => {
     })
 
     await req.user.save();
-    res.send();
+    res.send({status:'success', message:"logout complete"});
   } catch (err) {
     res.status(500).send(err);
   }
@@ -105,7 +105,7 @@ api.post('/me/logoutall', auth, async (req, res) => {
   try {
     req.user.tokens.splice(0, req.user.tokens.length);
     await req.user.save();
-    res.send();
+    res.send({status:'success', message:"logout complete"});
   } catch (err) {
     res.status(500).send(err);
   }
@@ -115,7 +115,12 @@ api.post('/me/logoutall', auth, async (req, res) => {
  * send back user info
  */
 api.get('/me', auth, async (req, res) => {
-  res.send(req.user);
+  try{
+    res.send(req.user);
+  } catch(err){
+    throw new Error(err)
+  }
+  
 })
 
 

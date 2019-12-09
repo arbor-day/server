@@ -5,15 +5,16 @@ const config = require('../config');
 const auth = async (req, res, next) => {
 
   try{
+
     let token;
-    
-    token = req.header('Authorization').replace('Bearer ', '');
 
-    if(!token === undefined || token === ''){
+    if(req.cookies.auth_token ){
       token = req.cookies.auth_token;
-    } 
-
-    console.log(token)
+    } else if(req.header('Authorization')) {
+      token = req.header('Authorization').replace('Bearer ', '');  
+    } else{
+      throw new Error('no token given')
+    }
 
     const data = jwt.verify(token, config.JWT_KEY)
     const user = await User.findOne({_id: data._id, 'tokens.token':token})
