@@ -77,7 +77,8 @@ api.put('/:id', auth, isOwner, async (req, res, next) => {
 
 api.delete('/:id', auth, isOwner, async (req, res, next) => {
   try {
-    const id = typeof req.params.id === String ? req.params.id : null;
+    const id = req.params.id;
+    
     await db.deleteOne(id);
     res.json({
       message: 'successfully deleted feature'
