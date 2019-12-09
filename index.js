@@ -17,8 +17,7 @@ let whitelist;
 if (process.env.NODE_ENV === 'production') {
     whitelist = [
       // add urls
-      'https://glitch.com/~arbor-day-server',
-      'https://glitch.com/~arbor-day-server/api/v1/*'
+      'https://focused-snyder-f15e2e.netlify.com/'
     ]
 } else {
     whitelist = [
@@ -41,7 +40,7 @@ const corsOptions = {
 
 // our middleware
 app.use(cookieParser())
-app.use('*', cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(publicPath));
