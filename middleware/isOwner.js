@@ -5,7 +5,6 @@ const Location = require('../models/location');
 const isOwner = async (req, res, next) => {
   try{
     const id = req.params.id; // typeof req.params.id === String ? req.params.id : null;
-    console.log(id)
     const data = await Location.findById(id);
 
     if(String(data.createdBy_id) === String(req.user._id)){

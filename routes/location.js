@@ -42,7 +42,8 @@ api.post('/', auth, async (req, res, next) => {
     const formattedData = {
       ...req.body,
       createdBy_username: req.user.username,
-      createdBy_id: req.user._id
+      createdBy_id: req.user._id,
+      status:undefined
     }
 
     const newData = await db.create(formattedData)
@@ -65,7 +66,7 @@ api.put('/:id', auth, isOwner, async (req, res, next) => {
     };
 
     const updatedData = await db.findByIdAndUpdate({_id:id}, updateCmd, {new:true});
-    res.json(updatedData);
+    res.json({data:updatedData, status:'success'});
   } catch (err) {
     next(err);
   }
@@ -78,11 +79,15 @@ api.put('/:id', auth, isOwner, async (req, res, next) => {
 api.delete('/:id', auth, isOwner, async (req, res, next) => {
   try {
     const id = req.params.id;
+
+    await db.findByIdAndRemove({_id:id});
     
-    await db.deleteOne(id);
     res.json({
+      status:'success',
+      id:id,
       message: 'successfully deleted feature'
     });
+
   } catch (error) {
     next(err);
   }

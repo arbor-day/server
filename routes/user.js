@@ -2,6 +2,7 @@ const express = require('express');
 const api = express.Router();
 const User = require('../models/user.js');
 const auth = require('../middleware/auth');
+const scrub = require('../middleware/scrub');
 
 
 // for emailer
@@ -114,9 +115,9 @@ api.post('/me/logoutall', auth, async (req, res) => {
 /**
  * send back user info
  */
-api.get('/me', auth, async (req, res) => {
+api.get('/me', auth, scrub, async (req, res) => {
   try{
-    res.send(req.user);
+    res.json({status:'success', ...res.locals.cleanUser});
   } catch(err){
     throw new Error(err)
   }
