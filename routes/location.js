@@ -6,25 +6,45 @@ const auth = require('../middleware/auth');
 /**
  * get
  */
-api.get('/', async (req, res) => {
-  const data = await db.find();
-  res.json(data);
+api.get('/', async (req, res, next) => {
+  try {
+    const data = await db.find();
+    res.json(data);
+  } catch (err) {
+    next(err)
+    // throw new Error(err);
+  }
+
 })
 
 /**
  * post
  */
-api.post('/', auth, async (req, res) => {
-  const newData = await db.create(req.body)
-  res.json(newData);
+api.post('/', auth, async (req, res, next) => {
+
+  try {
+    const formattedData = {
+      ...req.body,
+      createdBy_username: req.user.username,
+      createdBy_id: req.user._id
+    }
+
+    const newData = await db.create(formattedData)
+    res.json(newData);
+  } catch (err) {
+    next(err)
+  }
+
 })
 
 /**
  * put
  */
-api.put('/:id', auth, async (req, res)=> {
+api.put('/:id', auth, async (req, res) => {
   const id = typeof req.params.id === String ? req.params.id : null;
-  const updateCmd = {$set:req.body};
+  const updateCmd = {
+    $set: req.body
+  };
 
   const updatedData = await db.updateOne(id, updateCmd);
   res.json(updatedData);
@@ -36,7 +56,9 @@ api.put('/:id', auth, async (req, res)=> {
 api.delete('/:id', auth, async (req, res) => {
   const id = typeof req.params.id === String ? req.params.id : null;
   await db.deleteOne(id);
-  res.json({message:'successfully deleted feature'});
+  res.json({
+    message: 'successfully deleted feature'
+  });
 })
 
 
