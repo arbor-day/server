@@ -17,6 +17,7 @@ let whitelist;
 if (process.env.NODE_ENV === 'production') {
     whitelist = [
       // add urls
+      'https://glitch.com/~arbor-day-server'
     ]
 } else {
     whitelist = [
