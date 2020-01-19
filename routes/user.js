@@ -163,20 +163,39 @@ api.post('/auth/forgot_password', async (req, res) => {
       reset_password_expires: Date.now() + 86400000
     });
 
-    const emailData = {
-      to: user.email,
-      from: config.MAILER.EMAIL,
-      subject: '[MoreTrees.nyc] Forgot Password Request',
-      html: `
-        <div>
-        <h1>Password reset for arbor day</h1>
-        <p>
-          url: http://localhost:8080/reset_password?token=${token}
-          name: ${user.username}
-        </p>
-        </div>
-      `
+    let emailData;
+    if(process.env.NODE_ENV === 'production'){
+      emailData = {
+        to: user.email,
+        from: config.MAILER.EMAIL,
+        subject: '[MoreTrees.nyc] Forgot Password Request',
+        html: `
+          <div>
+          <h1>Password reset for arbor day</h1>
+          <p>
+            url: https://moretrees.nyc/reset_password?token=${token}
+            name: ${user.username}
+          </p>
+          </div>
+        `
+      }
+    } else {
+      emailData = {
+        to: user.email,
+        from: config.MAILER.EMAIL,
+        subject: '[MoreTrees.nyc] Forgot Password Request',
+        html: `
+          <div>
+          <h1>Password reset for arbor day</h1>
+          <p>
+            url: http://localhost:8080/reset_password?token=${token}
+            name: ${user.username}
+          </p>
+          </div>
+        `
+      }
     }
+    
 
     await emailer.sendMail(emailData);
 
