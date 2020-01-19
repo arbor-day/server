@@ -166,7 +166,7 @@ api.post('/auth/forgot_password', async (req, res) => {
     const emailData = {
       to: user.email,
       from: config.MAILER.EMAIL,
-      subject: '[Arbor day] Forgot Password Request',
+      subject: '[MoreTrees.nyc] Forgot Password Request',
       html: `
         <div>
         <h1>Password reset for arbor day</h1>
@@ -183,7 +183,7 @@ api.post('/auth/forgot_password', async (req, res) => {
     return res.json({status:'success', message:'Kindly check your email for further instructions'})
 
   } catch (err) {
-
+    console.log('-----------------', err)
     throw new Error('error in password reset')
 
   }

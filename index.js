@@ -53,11 +53,13 @@ app.get("/", (req, res) => {
 
 const userRoutes = require('./routes/user');
 const locationRoutes = require('./routes/location')
+const staticRoutes = require('./routes/static')
 
 // user routes
 app.use('/api/v1/users', userRoutes);
 // the locations routes
 app.use('/api/v1/locations', locationRoutes);
+app.use('/moretrees-static', staticRoutes);
 
 
 // fire up the server

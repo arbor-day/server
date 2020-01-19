@@ -1,8 +1,10 @@
 const express = require('express');
+const aws = require('aws-sdk');
 const api = express.Router();
 const db = require('../models/location.js');
 const auth = require('../middleware/auth');
 const isOwner = require('../middleware/isOwner');
+
 
 /**
  * get
