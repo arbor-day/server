@@ -26,7 +26,7 @@ api.post('/register', async (req, res) => {
 
     // Set a cookie
     res.cookie('auth_token', token, {
-      maxAge: 60 * 60 * 1000, // 1 hour
+      maxAge: 168 * 60 * 60 * 1000, // 1 hour
       httpOnly: true,
       secure: false, // true,
       sameSite: false,
@@ -65,7 +65,7 @@ api.post('/login', async (req, res) => {
 
     // Set a cookie
     res.cookie('auth_token', token, {
-      maxAge: 60 * 60 * 1000, // 1 hour
+      maxAge: 168 * 60 * 60 * 1000, // 1 week
       httpOnly: true,
       secure: false, // true,
       sameSite: false,
